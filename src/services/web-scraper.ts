@@ -79,11 +79,11 @@ export class WebScraperService {
     return result;
   }
 
-  public getSiteMap(nodes, siteMap): any {
-    for (const node of nodes) {
-      if (node.type === 'html') siteMap.push(node.url);
-      if (node.children && node.children.length > 0) {
-        return this.getSiteMap(node.children, siteMap);
+  public getSiteMap(elements, siteMap): any {
+    for (const node of elements) {
+      if (node.text && node.text.startsWith('http')) siteMap.push(node.text);
+      if (node.elements && node.elements.length > 0) {
+        this.getSiteMap(node.elements, siteMap);
       }
     }
     return siteMap;
@@ -91,7 +91,8 @@ export class WebScraperService {
 
   public async getSiteMapByDomain(domain: string) {
     const response = await axios.get(`${domain}/sitemap.xml`);
-    const siteMap =  convertXmlToJson.xml2json(response.data);
-    return JSON.parse(siteMap).elements;
+    const siteMap = convertXmlToJson.xml2json(response.data);
+    const elements = JSON.parse(siteMap).elements;
+    return this.getSiteMap(elements, []);
   }
 }
