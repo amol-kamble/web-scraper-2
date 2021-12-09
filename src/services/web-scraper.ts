@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { existsSync, mkdirSync } from 'fs';
 const SaveToExistingDirectoryPlugin = require('website-scraper-existing-directory');
 import axios from 'axios';
+import { fleschKincaid } from './redability.service';
 const scrape = require('website-scraper');
 var convertXmlToJson = require('xml-js');
 
@@ -33,9 +34,15 @@ export class WebScraperService {
 
     const wordCount = this.countWords(content);
 
-    const siteMap = this.getSiteMap(result, []);
+    const redabilityScore = fleschKincaid(content);
 
-    return { folder, tree: this.deepCopy(result), content, wordCount, siteMap };
+    return {
+      folder,
+      tree: this.deepCopy(result),
+      content,
+      wordCount,
+      redabilityScore,
+    };
   }
 
   public countWords = (str: string) => {
