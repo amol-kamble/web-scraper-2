@@ -14,7 +14,7 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Post('/scrape')
+  @Get('/scrape')
   async scrape(@Query('url') url: string): Promise<Record<string, unknown>> {
     return this.scraper.scrape(url);
   }
