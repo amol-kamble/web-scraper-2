@@ -4,8 +4,10 @@ import { join } from 'path';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  console.log(`${join(__dirname, '..', 'resources')}`)
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    cors: false,
+  });
+  console.log(`${join(__dirname, '..', 'resources')}`);
   app.useStaticAssets(join(__dirname, '..', 'resources'));
 
   await app.listen(3000);
