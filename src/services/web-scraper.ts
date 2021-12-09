@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { existsSync, mkdirSync } from 'fs';
 const SaveToExistingDirectoryPlugin = require('website-scraper-existing-directory');
-const JSON = require('serialize-json');
 const _ = require('lodash');
+const { convert } = require('html-to-text');
 
 const scrape = require('website-scraper');
 
@@ -25,8 +25,25 @@ export class WebScraperService {
       plugins: [new SaveToExistingDirectoryPlugin()],
     });
 
-    return { folder, tree: this.deepCopy(result) };
+    const contentRegex = new RegExp(/<\s*p[^>]*>(.*?)<\s*\/\s*p\s*>/gm);
+
+    const content = result[0].text
+      .match(contentRegex)
+      .join('')
+      .replaceAll(/<p>|<\/p>/gm, '<br>');
+
+    const wordCount = this.countWords(content);
+
+    return { folder, tree: this.deepCopy(result), content, wordCount };
   }
+
+  public countWords = (str: string) => {
+    str = str.trim();
+    if (!str.length) {
+      return str.length;
+    }
+    return str.trim().split(/\s+/).length;
+  };
 
   public getTypeFromExt(ext: string): string {
     if (
