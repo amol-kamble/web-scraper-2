@@ -28,10 +28,12 @@
     "clone-deep-circular-references": "^2.0.0",
     "html-to-text": "^8.1.0",
     "lodash": "^4.17.21",
+    "node-fetch": "^3.1.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "serialize-json": "^1.0.3",
+    "simplecrawler": "^1.1.9",
     "uuid": "^8.3.2",
     "website-scraper": "^4.2.3",
     "website-scraper-existing-directory": "^0.1.0"

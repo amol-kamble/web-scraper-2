@@ -4,6 +4,7 @@ import { existsSync, mkdirSync } from 'fs';
 const SaveToExistingDirectoryPlugin = require('website-scraper-existing-directory');
 const _ = require('lodash');
 const { convert } = require('html-to-text');
+var Crawler = require('simplecrawler');
 
 const scrape = require('website-scraper');
 
@@ -34,7 +35,9 @@ export class WebScraperService {
 
     const wordCount = this.countWords(content);
 
-    return { folder, tree: this.deepCopy(result), content, wordCount };
+    const siteMap = this.getSiteMap(result, []);
+
+    return { folder, tree: this.deepCopy(result), content, wordCount, siteMap };
   }
 
   public countWords = (str: string) => {
@@ -71,11 +74,24 @@ export class WebScraperService {
         depth: node.depth,
       };
       if (node.children && node.children.length > 0) {
-        current['children'] = [];
-        current['children'].push(this.deepCopy(node.children));
+        current['children'] = this.deepCopy(node.children);
       }
       result.push(current);
     }
     return result;
+  }
+
+  public getSiteMap(nodes, siteMap): any {
+    for (const node of nodes) {
+      if (node.type === 'html') siteMap.push(node.url);
+      if (node.children && node.children.length > 0) {
+        return this.getSiteMap(node.children, siteMap);
+      }
+    }
+    return siteMap;
+  }
+
+  public async getSiteMapByDomain(domain: string) {
+    const response = await fetch(`${domain}/sitemap.xml`);
   }
 }

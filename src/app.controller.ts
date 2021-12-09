@@ -18,4 +18,9 @@ export class AppController {
   async scrape(@Query('url') url: string): Promise<Record<string, unknown>> {
     return this.scraper.scrape(url);
   }
+
+  @Get('/sitemap')
+  async sitemap(@Query('domain') domain: string) {
+    return this.scraper.getSiteMapByDomain(domain);
+  }
 }
