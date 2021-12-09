@@ -2,11 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { existsSync, mkdirSync } from 'fs';
 const SaveToExistingDirectoryPlugin = require('website-scraper-existing-directory');
-const _ = require('lodash');
-const { convert } = require('html-to-text');
-var Crawler = require('simplecrawler');
-
+import axios from 'axios';
 const scrape = require('website-scraper');
+var convertXmlToJson = require('xml-js');
 
 const DEFAULT_RESOUCES_PATH = './resources';
 
@@ -92,6 +90,8 @@ export class WebScraperService {
   }
 
   public async getSiteMapByDomain(domain: string) {
-    const response = await fetch(`${domain}/sitemap.xml`);
+    const response = await axios.get(`${domain}/sitemap.xml`);
+    const siteMap =  convertXmlToJson.xml2json(response.data);
+    return JSON.parse(siteMap).elements;
   }
 }

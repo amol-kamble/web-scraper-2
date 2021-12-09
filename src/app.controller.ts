@@ -20,7 +20,7 @@ export class AppController {
   }
 
   @Get('/sitemap')
-  async sitemap(@Query('domain') domain: string) {
+  async sitemap(@Query('url') domain: string) {
     return this.scraper.getSiteMapByDomain(domain);
   }
 }
